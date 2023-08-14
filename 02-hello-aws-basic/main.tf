@@ -10,7 +10,8 @@ provider "aws" {
 variable "ec2_name_kuku" {
   description = "value for the Name tag of the EC2 instance"
   type        = string
-  default     = "example-instance"
+  default     = "my-instance"
+  sensitive   = true
 }
 
 
@@ -31,3 +32,8 @@ resource "aws_instance" "example_instance" {
 }
 
 
+# Output
+#####################
+output "instance_id" {
+  value = aws_instance.example_instance.id
+}

@@ -5,11 +5,11 @@ provider "aws" {
   region = "us-east-2"
 }
 
-
 # Resource configuration
 # Resource blocks are used to define resources in Terraform.
 # A resource block declares a resource of a given type ("aws_instance" in this case)
 # with a given local name ("example_instance" in this case).
+
 
 resource "aws_security_group" "example_sg" {
   name        = "example-sg"

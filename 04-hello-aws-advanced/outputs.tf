@@ -16,6 +16,6 @@ output "instance_id" {
   value = aws_instance.app_instance.id
 }
 
-# output "virtual_machine_id" {
-#   value = data.aws_availability_zones.available.names
-# }
+output "aws_availability_zones" {
+  value = data.aws_availability_zones.available.names
+}

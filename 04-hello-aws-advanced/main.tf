@@ -14,6 +14,7 @@ resource "random_id" "server" {
 
 # Resource configuration
 resource "aws_security_group" "example_sg" {
+
   name        = "example-sg"
   description = "Example security group"
 }
@@ -28,21 +29,20 @@ resource "aws_instance" "app_instance" {
     application = "${local.tags.application}"
   }
   security_groups = [aws_security_group.example_sg.name]
-
+  depends_on      = [aws_instance.db_instance]
 }
 
-# resource "aws_instance" "db_instance" {
-#   ami           = "ami-0ccabb5f82d4c9af5"
-#   instance_type = local.instance_type
-#   tags = {
-#     Name        = "db-${var.ec2_name}-${random_id.server.hex}"
-#     environment = "${local.tags.environment}"
-#     application = "${local.tags.application}"
-#   }
-#   security_groups = [aws_security_group.example_sg.name]
-#   # count           = (local.tags.environment == "prod") ? 1 : 0
-#   # depends_on      = [aws_instance.app_instance]
-# }
+resource "aws_instance" "db_instance" {
+  ami           = "ami-0ccabb5f82d4c9af5"
+  instance_type = local.instance_type
+  tags = {
+    Name        = "db-${var.ec2_name}-${random_id.server.hex}"
+    environment = "${local.tags.environment}"
+    application = "${local.tags.application}"
+  }
+  security_groups = [aws_security_group.example_sg.name]
+  count           = (local.tags.environment == "prod") ? 1 : 0
+}
 
 locals {
   instance_type = "t2.micro"
@@ -59,6 +59,6 @@ data "template_file" "userdata" {
   }
 }
 
-# data "aws_availability_zones" "available" {
-#   state = "available"
-# }
+data "aws_availability_zones" "available" {
+  state = "available"
+}
