@@ -1,28 +1,8 @@
-terraform {
-  required_providers {
-    docker = {
-      source  = "kreuzwerker/docker"
-      version = "~> 3.0.1"
-    }
-  }
-}
-
-provider "docker" {}
-
-# Variables
-######################
-variable "mysql_root_password" {
-  default = "password"
-}
-
-# Outputs
-######################
-output "wordpress_logs" {
-  value = data.docker_logs.wordpress.logs_list_string
-}
-
 # Resources
 ######################
+
+# Images
+
 resource "docker_image" "mysql" {
   name         = "mysql:latest"
   keep_locally = false
@@ -32,6 +12,8 @@ resource "docker_image" "wordpress" {
   name         = "wordpress:latest"
   keep_locally = false
 }
+
+# Containers
 
 resource "docker_container" "mysql" {
   image = docker_image.mysql.image_id
@@ -70,10 +52,18 @@ resource "docker_container" "wordpress" {
   ]
 }
 
+# Networks
+
 resource "docker_network" "wordpress" {
   name = "wordpress"
 }
 
+# Data Sources
+
 data "docker_logs" "wordpress" {
   name = docker_container.wordpress.name
+}
+
+data "docker_logs" "mysql" {
+  name = docker_container.mysql.name
 }
